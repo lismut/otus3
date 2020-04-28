@@ -19,6 +19,15 @@ int main()
     for (auto a : secondMap) {
         std::cout << a.first << " " << a.second << std::endl;
     }
-    //containerList<int> firstList;
-
+    containerList<int> firstList;
+    for (int i = 0; i < 10; ++i) {
+        firstList.pushFront(i);
+    }
+    containerList<int, customAlloc<int, 10>> secondList;
+    for (int i = 0; i < 10; ++i) {
+        secondList.pushFront(i);
+    }
+    for (auto a : secondList) {
+        std::cout << a << std::endl;
+    }
 }

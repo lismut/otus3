@@ -1,4 +1,5 @@
 language: cpp
+dist: bionic
 before_script:
 - sudo apt-get install libboost-test-dev -y
 - echo "deb http://archive.ubuntu.com/ubuntu xenial main universe" | sudo tee -a /etc/apt/sources.list
@@ -12,4 +13,4 @@ deploy:
   provider: script
   skip_cleanup: true
   script:
-  - curl -T iptask-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb -ulismut:$BINTRAY_API_KEY "https://api.bintray.com/content/lismut/otus1/otus1/$TRAVIS_BUILD_NUMBER/iptask-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb;deb_distribution=trusty;deb_component=main;deb_architecture=amd64;publish=1"
+  - curl -T allocator-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb -ulismut:$BINTRAY_API_KEY "https://api.bintray.com/content/lismut/otus3/otus3/$TRAVIS_BUILD_NUMBER/allocator-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb;deb_distribution=trusty;deb_component=main;deb_architecture=amd64;publish=1"

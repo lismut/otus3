@@ -17,14 +17,16 @@ private:
     Allocator allocInstance;
     node* head = nullptr;
     size_t size = 0;
+    using NodeAlloc = typename std::allocator_traits<Allocator>::template rebind_alloc<node>;
+    NodeAlloc nodeAllocInstance;
 
     void deleteNode(node* one) {
-        allocInstance.destroy(one);
-        allocInstance.deallocate(one, 1);
+        nodeAllocInstance.destroy(one);
+        nodeAllocInstance.deallocate(one, 1);
     }
     node* makeNode(T& newVal) {
-        node* newNode = allocInstance.allocate(1);
-        allocInstance.construct(newNode, newVal);
+        node* newNode = nodeAllocInstance.allocate(1);
+        nodeAllocInstance.construct(newNode, newVal);
         return newNode;
     }
 public:
@@ -66,7 +68,7 @@ public:
     };
     using iterator = myIterator<false>;
     using iteratorConst = myIterator<true>;
-    bool empty() const {
+    [[nodiscard]] bool empty() const {
         return head == nullptr;
     }
     const T& front() const{
@@ -79,7 +81,7 @@ public:
         const T& constVal = front();
         return const_cast<T>(constVal);
     }
-    void pushFront(const T& val) {
+    void pushFront(T& val) {
         node* newFront = makeNode(val);
         newFront->next = head;
         head = newFront;
