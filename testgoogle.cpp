@@ -3,7 +3,7 @@
 
 TEST(GOOGLE_TEST1, test2)
 {
-	ASSERT_TRUE(version() > 1);
+	ASSERT_TRUE(version() > 0);
 }
 
 int main(int argc, char** argv) {
