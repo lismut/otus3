@@ -37,7 +37,8 @@ public:
             p = freeElems.front();
             freeElems.pop_front();
         } else if (currentShift < ElemCount && !packs.empty()) {
-            p = packs.front() + currentShift*sizeof(T);
+            p = packs.front() + currentShift;
+            currentShift++;
         } else if ((p = internalAlloc())) {
             currentShift = 1;
         } else {
@@ -70,7 +71,7 @@ private:
     pointer ptr = nullptr;
     size_t currentShift = 0;
     pointer internalAlloc () {
-        return internalAlloc (1);
+        return internalAlloc (ElemCount);
     }
     pointer internalAlloc (size_t cnt) {
         auto p = static_cast<pointer>(std::malloc(cnt*sizeof(T)));
