@@ -26,25 +26,26 @@ public:
 
     pointer allocate(size_t n)
     {
-        return internalAlloc(n);
+        pointer p;
+        if (!freeElems.empty() && n == 1) {
+            p = freeElems.front();
+            freeElems.pop_front();
+        } else if (currentShift + n < ElemCount && !packs.empty()) {
+            p = packs.front() + currentShift;
+            currentShift += n;
+        } else {
+            if (!packs.empty())
+                for (;currentShift < ElemCount; ++currentShift) {
+                    freeElems.push_back(packs.front() + currentShift);
+                }
+            p = internalAlloc(n);
+            currentShift = n;
+        }
+        return p;
     }
 
     [[nodiscard]] pointer allocate() {
-        if (ElemCount > std::numeric_limits<std::size_t>::max() / sizeof(T))
-            throw std::bad_alloc();
-        pointer p;
-        if (!freeElems.empty()) {
-            p = freeElems.front();
-            freeElems.pop_front();
-        } else if (currentShift < ElemCount && !packs.empty()) {
-            p = packs.front() + currentShift;
-            currentShift++;
-        } else if ((p = internalAlloc())) {
-            currentShift = 1;
-        } else {
-            throw std::bad_alloc();
-        }
-        return p;
+        return allocate(1);
     }
 
     void deallocate(pointer p, std::size_t n=0) {
@@ -74,7 +75,11 @@ private:
         return internalAlloc (ElemCount);
     }
     pointer internalAlloc (size_t cnt) {
-        auto p = static_cast<pointer>(std::malloc(cnt*sizeof(T)));
+        if (cnt > std::numeric_limits<std::size_t>::max() / sizeof(T) ||
+                ElemCount > std::numeric_limits<std::size_t>::max() / sizeof(T))
+            throw std::bad_alloc();
+        size_t sz = std::max(cnt, (size_t)ElemCount);
+        auto p = static_cast<pointer>(std::malloc(sz*sizeof(T)));
         if (!p) {
             throw std::bad_alloc();
         }
